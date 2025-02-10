@@ -2,13 +2,13 @@
 
 import { NextResponse } from "next/server";
 import Task from "../../../../models/task";
-import { connectDB } from "../../../../tracker/lib/db";  
+import { connectDB } from "../../../../tracker/lib/db";
 
 // ✅ PATCH - Update task (edit label, deadline, etc.) or toggle completion
 export async function PATCH(req: Request, { params }: { params: { id: string } }) {
   try {
     await connectDB();
-    const { id } = params;
+    const { id } = params;  // Extract ID from params
     const updates = await req.json();
 
     // If the request contains only "toggle" action, flip completion status
@@ -36,7 +36,7 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
 export async function DELETE(req: Request, { params }: { params: { id: string } }) {
   try {
     await connectDB();
-    const { id } = params;
+    const { id } = params;  // Extract ID from params
     const deletedTask = await Task.findByIdAndDelete(id);
 
     if (!deletedTask) return NextResponse.json({ error: "Task not found" }, { status: 404 });
@@ -44,5 +44,20 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
     return NextResponse.json({ message: "Task deleted successfully" });
   } catch (error) {
     return NextResponse.json({ error: "Failed to delete task" }, { status: 500 });
+  }
+}
+
+// ✅ GET - Get a task by its ID
+export async function GET(req: Request, { params }: { params: { id: string } }) {
+  try {
+    await connectDB();
+    const { id } = params;  // Extract ID from params
+    const task = await Task.findById(id);
+
+    if (!task) return NextResponse.json({ error: "Task not found" }, { status: 404 });
+
+    return NextResponse.json(task);
+  } catch (error) {
+    return NextResponse.json({ error: "Failed to fetch task" }, { status: 500 });
   }
 }
