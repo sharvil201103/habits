@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
+
 import { NextResponse } from "next/server";
 import { connectDB } from "../../../tracker/lib/db";
 import Task from "../../../models/task";

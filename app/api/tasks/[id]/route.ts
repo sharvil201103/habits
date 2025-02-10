@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
+
 import { NextResponse } from "next/server";
 import Task from "../../../../models/task";
 import { connectDB } from "../../../../tracker/lib/db";  
@@ -56,6 +59,6 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
 
     return NextResponse.json({ message: "Task deleted successfully" });
   } catch (error) {
-    return NextResponse.json({ error: "Failed to delete task" }, { status: 500 });
+    return NextResponse.json({ message : "Failed to delete task" , error}, { status: 500 });
   }
 }
