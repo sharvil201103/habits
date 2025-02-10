@@ -1,15 +1,14 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
-
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import Task from "../../../../models/task";
-import { connectDB } from "../../../../tracker/lib/db";  
+import { connectDB } from "../../../../tracker/lib/db";
 
 // ✅ GET - Fetch a task by ID
-export async function GET(req: Request, { params }: { params: { id: string } }) {
+export async function GET(req: NextRequest, context: { params: { id: string } }) {
   try {
     await connectDB();
-    const { id } = params;
+    const { id } = context.params;
     const task = await Task.findById(id);
 
     if (!task) return NextResponse.json({ error: "Task not found" }, { status: 404 });
@@ -21,10 +20,10 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
 }
 
 // ✅ PATCH - Update task (edit label, deadline, etc.) or toggle completion
-export async function PATCH(req: Request, { params }: { params: { id: string } }) {
+export async function PATCH(req: NextRequest, context: { params: { id: string } }) {
   try {
     await connectDB();
-    const { id } = params;
+    const { id } = context.params;
     const updates = await req.json();
 
     // If the request contains only "toggle" action, flip completion status
@@ -49,16 +48,16 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
 }
 
 // ✅ DELETE - Remove a task
-export async function DELETE(req: Request, { params }: { params: { id: string } }) {
+export async function DELETE(req: NextRequest, context: { params: { id: string } }) {
   try {
     await connectDB();
-    const { id } = params;
+    const { id } = context.params;
     const deletedTask = await Task.findByIdAndDelete(id);
 
     if (!deletedTask) return NextResponse.json({ error: "Task not found" }, { status: 404 });
 
     return NextResponse.json({ message: "Task deleted successfully" });
   } catch (error) {
-    return NextResponse.json({ message : "Failed to delete task" , error}, { status: 500 });
+    return NextResponse.json({ message: "Failed to delete task", error }, { status: 500 });
   }
 }
